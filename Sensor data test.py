@@ -1,3 +1,8 @@
+
+# Built on top of the Simple Adafruit BNO055 sensor reading example
+# Original example copyright: Adafruit Industries (Author: Tony DiCola)
+# Original example license BSD 3-clause
+############# Original Example License Text #######################
 # Simple Adafruit BNO055 sensor reading example.  Will print the orientation
 # and calibration data every second.
 #
@@ -21,6 +26,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+############# Original Example License Text #######################
+
 import logging
 import sys
 import time
@@ -29,15 +36,8 @@ import matplotlib.pyplot as plt
 from Adafruit_BNO055 import BNO055
 
 
-# Create and configure the BNO sensor connection.  Make sure only ONE of the
-# below 'bno = ...' lines is uncommented:
 # Raspberry Pi configuration with serial UART and RST connected to GPIO 18:
 bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
-# BeagleBone Black configuration with default I2C connection (SCL=P9_19, SDA=P9_20),
-# and RST connected to pin P9_12:
-#bno = BNO055.BNO055(rst='P9_12')
-
-
 # Enable verbose debug logging if -v is passed as a parameter.
 if len(sys.argv) == 2 and sys.argv[1].lower() == '-v':
     logging.basicConfig(level=logging.DEBUG)
@@ -65,15 +65,14 @@ print('Gyroscope ID:       0x{0:02X}\n'.format(gyro))
 
 t_rel = 0
 
-t_vec = []
+t_vec  = []
 ax_vec = []
 ay_vec = []
 az_vec = []
 
 print('Reading BNO055 data, press Ctrl-C to quit...')
-t_start = time.time()
-dt_initial = 0.5
-accel = 0
+t_start   = time.time()
+accel     = 0
 calibrate = True
 while (calibrate):
     # Read the calibration status, 0=uncalibrated and 3=fully calibrated.
@@ -91,29 +90,15 @@ while (calibrate):
     time.sleep(0.01)
 
 print('CALIBRATED!')
-print(t_rel)
+print('Calibration lasted for {0:0.2F}'.format(t_rel) )
 time.sleep(10)
+
 t_start = time.time()
-t_rel = 0
+t_rel   = 0
+dt      = 0.05
 while (t_rel<15):
-    # Read the Euler angles for heading, roll, pitch (all in degrees).
-    # heading, roll, pitch = bno.read_euler()
     # Read the calibration status, 0=uncalibrated and 3=fully calibrated.
     sys, gyro, accel, mag = bno.get_calibration_status()
-    # Print everything out.
-    # print('Heading={0:0.2F} Roll={1:0.2F} Pitch={2:0.2F}\tSys_cal={3} Gyro_cal={4} Accel_cal={5} Mag_cal={6}'.format(
-     #     heading, roll, pitch, sys, gyro, accel, mag))
-    # Other values you can optionally read:
-    # Orientation as a quaternion:
-    #x,y,z,w = bno.read_quaterion()
-    # Sensor temperature in degrees Celsius:
-    #temp_c = bno.read_temp()
-    # Magnetometer data (in micro-Teslas):
-    #x,y,z = bno.read_magnetometer()
-    # Gyroscope data (in degrees per second):
-    #x,y,z = bno.read_gyroscope()
-    # Accelerometer data (in meters per second squared):
-    #x,y,z = bno.read_accelerometer()
     # Linear acceleration data (i.e. acceleration from movement, not gravity--
     # returned in meters per second squared):
     ax,ay,az = bno.read_linear_acceleration()
@@ -122,13 +107,8 @@ while (t_rel<15):
     ax_vec.append(ax)
     ay_vec.append(ay)
     az_vec.append(az)
-        
-
-    # Gravity acceleration data (i.e. acceleration just from gravity--returned
-    # in meters per second squared):
-    #x,y,z = bno.read_gravity()
-    # Sleep for a second until the next reading.
-    time.sleep(0.05)
+    # Sleep for dt  until the next reading.
+    time.sleep(dt)
 
 plt.plot(t_vec,ax_vec,'r',label='Ax')
 plt.plot(t_vec,ay_vec,'g',label='Ay')
