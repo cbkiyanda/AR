@@ -148,7 +148,7 @@ class Simulation:
             
             for v in self.vertices:
                 # Translate the point about X axis, then about Y axis, and finally about Z axis.
-                r = v.rotateX(self.angle).rotateY(self.angle).rotateZ(self.angle).translateX(self.xdist).translateY(self.ydist).translateZ(self.zdist)
+                r = v.rotateX(self.heading).rotateY(self.roll).rotateZ(self.pitch)#.translateX(self.xdist).translateY(self.ydist).translateZ(self.zdist)
                          
                # Transform the point from 3D to 2D
                 p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
@@ -192,7 +192,7 @@ class Simulation:
             print(self.current_time - self.previous_time)
             print(self.current_time)
             
-            self.angle += 2
+            #self.angle += 2
             #self.zdist += 0
             #self.ydist += 0
             #self.xdist += 0
