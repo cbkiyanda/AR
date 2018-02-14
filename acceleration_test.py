@@ -55,8 +55,8 @@ bno.setExternalCrystalUse(True)
 #############
 	
 # Print system status and self test result.
-#status, self_test, error = bno.get_system_status() ##adafruit
-status, self_test, error = bno.getSystemStatus() ##XU4
+status, self_test, error = bno.get_system_status() ##adafruit
+#status, self_test, error = bno.getSystemStatus() ##XU4
 print('System status: {0}'.format(status))
 print('Self test result (0x0F is normal): 0x{0:02X}'.format(self_test))
 # Print out an error if system status is in error mode.
@@ -65,8 +65,8 @@ if status == 0x01:
     print('See datasheet section 4.3.59 for the meaning.')
 
 # Print BNO055 software revision and other diagnostic data.
-#sw, bl, accel, mag, gyro = bno.get_revision() ##adafruit
-accel, mag, gyro, sw, bl  = bno.getRevInfo() ##XU4
+sw, bl, accel, mag, gyro = bno.get_revision() ##adafruit
+#accel, mag, gyro, sw, bl  = bno.getRevInfo() ##XU4
 print('Software version:   {0}'.format(sw))
 print('Bootloader version: {0}'.format(bl))
 print('Accelerometer ID:   0x{0:02X}'.format(accel))
@@ -112,8 +112,8 @@ while (t_rel<15):
     # sys, gyro, accel, mag = bno.get_calibration_status()
     # Linear acceleration data (i.e. acceleration from movement, not gravity--
     # returned in meters per second squared):
-    ##ax,ay,az = bno.read_linear_acceleration() #adafruit
-    (ax,ay,az) = bno.getVector(BNO055.BNO055.VECTOR_LINEARACCEL)
+    ax,ay,az = bno.read_linear_acceleration() #adafruit
+    #(ax,ay,az) = bno.getVector(BNO055.BNO055.VECTOR_LINEARACCEL)
     t_rel = time.time() - t_start
     t_vec.append(t_rel)
     ax_vec.append(ax)
