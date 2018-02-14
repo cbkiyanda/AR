@@ -269,6 +269,10 @@ class BNO055:
 		self_test = self.readBytes(BNO055.BNO055_SELFTEST_RESULT_ADDR)[0]
 		return (sys_stat, self_test, sys_err)
 
+  def get_system_status(self):
+    sys_stat, self_test, sys_err = self.getSystemStatus()
+    return (sys_stat, self_test, sys_err)
+
 	def getRevInfo(self):
 		(accel_rev, mag_rev, gyro_rev) = self.readBytes(BNO055.BNO055_ACCEL_REV_ID_ADDR, 3)
 		sw_rev = self.readBytes(BNO055.BNO055_SW_REV_ID_LSB_ADDR, 2)
@@ -276,6 +280,10 @@ class BNO055:
 		bl_rev = self.readBytes(BNO055.BNO055_BL_REV_ID_ADDR)[0]
 		return (accel_rev, mag_rev, gyro_rev, sw_rev, bl_rev)
 
+  def get_revision(self):
+    accel_rev, mag_rev, gyro_rev, sw_rev, bl_rev = self.getRevInfo()
+    return (sw_rev, bl_rev, accel_rev, mag_rev, gyro_rev)
+    
 	def getCalibration(self):
 		calData = self.readBytes(BNO055.BNO055_CALIB_STAT_ADDR)[0]
 		return (calData >> 6 & 0x03, calData >> 4 & 0x03, calData >> 2 & 0x03, calData & 0x03)
@@ -292,6 +300,14 @@ class BNO055:
 		elif vectorType == BNO055.VECTOR_GRAVITY:	scalingFactor = 100.0
 		else:											scalingFactor = 1.0
 		return tuple([i/scalingFactor for i in xyz])
+
+  def read_euler(self):
+    a,b,c=self.getVector(BNO055.VECTOR_EULER)
+    return (a,b,c)
+  
+  def read_linear_acceleration(self):
+    a,b,c = self.getVector(BNO055.VECTOR_LINEARACCEL)
+    return (a,b,c)
 
 	def getQuat(self):
 		buf = self.readBytes(BNO055.BNO055_QUATERNION_DATA_W_LSB_ADDR, 8)
