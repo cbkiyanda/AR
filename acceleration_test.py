@@ -33,21 +33,30 @@ import sys
 import time
 import matplotlib.pyplot as plt
 
-from Adafruit_BNO055 import BNO055
-
+#from Adafruit_BNO055 import BNO055
+import BNO055 #simpler, alternate library that works with XU4
 
 # Raspberry Pi configuration with serial UART and RST connected to GPIO 18:
-bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
+#bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
 # Enable verbose debug logging if -v is passed as a parameter.
-if len(sys.argv) == 2 and sys.argv[1].lower() == '-v':
-    logging.basicConfig(level=logging.DEBUG)
+#if len(sys.argv) == 2 and sys.argv[1].lower() == '-v':
+#    logging.basicConfig(level=logging.DEBUG)
+
+#For XU4, initialization of sensor
+bno = BNO055()
 
 # Initialize the BNO055 and stop if something went wrong.
 if not bno.begin():
     raise RuntimeError('Failed to initialize BNO055! Is the sensor connected?')
 
+#############XU4 specific code section
+time.sleep(1)
+bno.setExternalCrystalUse(True)
+#############
+	
 # Print system status and self test result.
-status, self_test, error = bno.get_system_status()
+#status, self_test, error = bno.get_system_status() ##adafruit
+status, self_test, error = bno.getSystemStatus() ##XU4
 print('System status: {0}'.format(status))
 print('Self test result (0x0F is normal): 0x{0:02X}'.format(self_test))
 # Print out an error if system status is in error mode.
@@ -56,7 +65,8 @@ if status == 0x01:
     print('See datasheet section 4.3.59 for the meaning.')
 
 # Print BNO055 software revision and other diagnostic data.
-sw, bl, accel, mag, gyro = bno.get_revision()
+#sw, bl, accel, mag, gyro = bno.get_revision() ##adafruit
+accel, mag, gyro, sw, bl  = bno.get_revision() ##XU4
 print('Software version:   {0}'.format(sw))
 print('Bootloader version: {0}'.format(bl))
 print('Accelerometer ID:   0x{0:02X}'.format(accel))
@@ -73,7 +83,8 @@ az_vec = []
 print('Reading BNO055 data, press Ctrl-C to quit...')
 t_start   = time.time()
 accel     = 0
-calibrate = True
+calibrate = False #True
+t_rel = -1
 while (calibrate):
     # Read the calibration status, 0=uncalibrated and 3=fully calibrated.
     sys, gyro, accel, mag = bno.get_calibration_status()
@@ -98,10 +109,11 @@ t_rel   = 0
 dt      = 0.05
 while (t_rel<15):
     # Read the calibration status, 0=uncalibrated and 3=fully calibrated.
-    sys, gyro, accel, mag = bno.get_calibration_status()
+    # sys, gyro, accel, mag = bno.get_calibration_status()
     # Linear acceleration data (i.e. acceleration from movement, not gravity--
     # returned in meters per second squared):
-    ax,ay,az = bno.read_linear_acceleration()
+    ##ax,ay,az = bno.read_linear_acceleration() #adafruit
+    (ax,ay,az) = bno.getVector(BNO055.VECTOR_LINEARACCEL)
     t_rel = time.time() - t_start
     t_vec.append(t_rel)
     ax_vec.append(ax)
