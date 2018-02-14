@@ -287,7 +287,11 @@ class BNO055:
 	def getCalibration(self):
 		calData = self.readBytes(BNO055.BNO055_CALIB_STAT_ADDR)[0]
 		return (calData >> 6 & 0x03, calData >> 4 & 0x03, calData >> 2 & 0x03, calData & 0x03)
-
+  
+  def get_calibration_status(self):
+    sys, gyro, accel, mag = self.getCalibration()
+    return (sys,gyro,accel,mag)
+    
 	def getTemp(self):
 		return self.readBytes(BNO055.BNO055_TEMP_ADDR)[0]
 
