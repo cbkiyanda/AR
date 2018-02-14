@@ -7,19 +7,35 @@ import logging
 import time
 
 from operator import itemgetter
-from Adafruit_BNO055 import BNO055
+
+##Raspberry PI 3 Configuration
+#from Adafruit_BNO055 import BNO055
 
 # Create and configure the BNO sensor connection
 # Raspberry Pi configuration with serial UART and RST connected to GPIO 18:
-bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
+#bno = BNO055.BNO055(serial_port='/dev/ttyAMA0', rst=18)
 
 # Enable verbose debug logging if -v is passed as a parameter.
-if len(sys.argv) == 2 and sys.argv[1].lower() == '-v':
-    logging.basicConfig(level=logging.DEBUG)
+#if len(sys.argv) == 2 and sys.argv[1].lower() == '-v':
+#    logging.basicConfig(level=logging.DEBUG)
+#################
+
+##XU4 configuration
+import BNO055
+bno = BNO055.BNO055()
+##########################
+
+
+
 
 # Initialize the BNO055 and stop if something went wrong.
 if not bno.begin():
     raise RuntimeError('Failed to initialize BNO055! Is the sensor connected?')
+
+#############XU4 specific code section
+time.sleep(1)
+bno.setExternalCrystalUse(True)
+#############
 
 # Print system status and self test result.
 status, self_test, error = bno.get_system_status()
