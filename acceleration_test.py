@@ -43,7 +43,7 @@ import BNO055 #simpler, alternate library that works with XU4
 #    logging.basicConfig(level=logging.DEBUG)
 
 #For XU4, initialization of sensor
-bno = BNO055()
+bno = BNO055.BNO055()
 
 # Initialize the BNO055 and stop if something went wrong.
 if not bno.begin():
@@ -66,7 +66,7 @@ if status == 0x01:
 
 # Print BNO055 software revision and other diagnostic data.
 #sw, bl, accel, mag, gyro = bno.get_revision() ##adafruit
-accel, mag, gyro, sw, bl  = bno.get_revision() ##XU4
+accel, mag, gyro, sw, bl  = bno.getRevInfo() ##XU4
 print('Software version:   {0}'.format(sw))
 print('Bootloader version: {0}'.format(bl))
 print('Accelerometer ID:   0x{0:02X}'.format(accel))
@@ -113,7 +113,7 @@ while (t_rel<15):
     # Linear acceleration data (i.e. acceleration from movement, not gravity--
     # returned in meters per second squared):
     ##ax,ay,az = bno.read_linear_acceleration() #adafruit
-    (ax,ay,az) = bno.getVector(BNO055.VECTOR_LINEARACCEL)
+    (ax,ay,az) = bno.getVector(BNO055.BNO055.VECTOR_LINEARACCEL)
     t_rel = time.time() - t_start
     t_vec.append(t_rel)
     ax_vec.append(ax)
